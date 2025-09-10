@@ -25,6 +25,15 @@ Set the following environment variables:
 - `FRONTEND_ORIGIN`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
+- `OPENAI_API_KEY`
+
+### API Endpoints
+
+- `POST /api/transcribe` – upload an audio file and receive transcribed text with confidence scores.
+- `POST /api/suggest` – send conversation context and receive three response suggestions.
+- `GET /api/favorites` – list saved phrases with pagination and search.
+- `POST /api/favorites` – save a new phrase.
+- `DELETE /api/favorites/:id` – remove a saved phrase.
 
 For production:
 
