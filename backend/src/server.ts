@@ -1,0 +1,45 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true
+}));
+
+app.use(helmet());
+
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+}));
+
+app.use(express.json());
+
+app.use(morgan('combined'));
+
+const server = app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
+
+const shutdown = () => {
+  server.close(() => {
+    console.log('Server closed gracefully');
+    process.exit(0);
+  });
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+export default app;
