@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
 import rateLimit from 'express-rate-limit';
 import openai from '../config/openai';
 
@@ -12,7 +13,7 @@ interface SuggestBody {
   tone?: string;
 }
 
-router.post('/', limiter, async (req: Request<unknown, unknown, SuggestBody>, res: Response) => {
+router.post('/', limiter, async (req: Request<ParamsDictionary, any, SuggestBody>, res: Response) => {
   try {
     const { context, topics = [], tone } = req.body;
     if (!context || typeof context !== 'string') {
