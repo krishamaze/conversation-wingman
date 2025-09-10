@@ -1,17 +1,9 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const apiKey = process.env.OPENAI_API_KEY;
-
-if (!apiKey) {
-  throw new Error('Missing OpenAI API key');
-}
+import { OPENAI_API_KEY } from './env';
 
 let openai: OpenAI;
 try {
-  openai = new OpenAI({ apiKey });
+  openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 } catch (error) {
   console.error('Failed to initialize OpenAI client', error);
   throw error;

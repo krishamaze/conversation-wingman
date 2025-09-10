@@ -19,13 +19,13 @@ npm install
 npm run dev
 ```
 
-Set the following environment variables:
+Set the following environment variables (validated at startup):
 
-- `PORT` (optional)
 - `FRONTEND_ORIGIN`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `OPENAI_API_KEY`
+- `PORT` (optional, defaults to `3000`)
 
 ### API Endpoints
 
@@ -38,9 +38,11 @@ Set the following environment variables:
 For production:
 
 ```bash
-npm run build
 npm start
 ```
+
+Render runs `npm install` during build, which triggers a `postinstall`
+script to compile TypeScript. The start command remains `npm start`.
 
 ## Implemented Components
 - `AudioRecorder` – captures microphone input with visual feedback.
