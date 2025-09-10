@@ -16,10 +16,10 @@ export default function ConversationInterface() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
 
-  const handleAudio = async (blob) => {
+  const handleAudio = async (file) => {
     try {
       setLoading(true);
-      const { text } = await transcribeAudio(blob);
+      const { text } = await transcribeAudio(file);
       setTranscript(text);
       setLoading(false);
     } catch (e) {

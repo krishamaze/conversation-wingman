@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface AudioRecorderProps {
-  onRecordingComplete: (blob: Blob) => void;
+  onRecordingComplete: (file: File) => void;
 }
 
 export default function AudioRecorder({ onRecordingComplete }: AudioRecorderProps) {
@@ -29,12 +29,26 @@ export default function AudioRecorder({ onRecordingComplete }: AudioRecorderProp
       analyser.current.fftSize = 256;
       source.connect(analyser.current);
 
-      mediaRecorder.current = new MediaRecorder(stream);
+      let mimeType = '';
+      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        mimeType = 'audio/webm';
+      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+        mimeType = 'audio/webm';
+      } else if (MediaRecorder.isTypeSupported('audio/wav')) {
+        mimeType = 'audio/wav';
+      } else {
+        setError('No supported audio format');
+        return;
+      }
+
+      mediaRecorder.current = new MediaRecorder(stream, { mimeType });
       mediaRecorder.current.ondataavailable = (e) => chunks.current.push(e.data);
       mediaRecorder.current.onstop = () => {
-        const blob = new Blob(chunks.current, { type: 'audio/webm' });
+        const blob = new Blob(chunks.current, { type: mimeType });
+        const ext = mimeType === 'audio/webm' ? 'webm' : 'wav';
+        const file = new File([blob], `recording.${ext}`, { type: mimeType });
         chunks.current = [];
-        onRecordingComplete(blob);
+        onRecordingComplete(file);
       };
       mediaRecorder.current.start();
       setIsRecording(true);
