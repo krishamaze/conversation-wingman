@@ -1,7 +1,11 @@
 // Conversation Wingman main component
-import React, { useState } from 'react';
+import React from 'react';
+import ConversationInterface from './components/ConversationInterface';
 
 export default function App() {
-  const [title] = useState('Conversation Wingman');
-  return <div>{title}</div>;
+  return (
+    <div className="p-4">
+      <ConversationInterface />
+    </div>
+  );
 }

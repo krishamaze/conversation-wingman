@@ -41,3 +41,11 @@ For production:
 npm run build
 npm start
 ```
+
+## Implemented Components
+- `AudioRecorder` – captures microphone input with visual feedback.
+- `SuggestionCards` – displays AI-generated suggestions with confidence bars and copy-to-clipboard.
+- `ConversationInterface` – main workspace integrating recording, transcription, and suggestions.
+
+## Frontend API Service
+Located at `frontend/src/services/api.js`, this client manages requests, tokens, and retries for all backend endpoints.
