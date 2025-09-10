@@ -9,6 +9,7 @@ import suggestRouter from './routes/suggest';
 import favoritesRouter from './routes/favorites';
 
 const app = express();
+app.set('trust proxy', true);
 
 app.use(cors({
   origin: FRONTEND_ORIGIN,
