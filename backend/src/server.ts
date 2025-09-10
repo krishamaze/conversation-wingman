@@ -3,17 +3,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
+import { PORT, FRONTEND_ORIGIN } from './config/env';
 import transcribeRouter from './routes/transcribe';
 import suggestRouter from './routes/suggest';
 import favoritesRouter from './routes/favorites';
 
-dotenv.config();
-
 const app = express();
-
-const PORT = process.env.PORT || 3000;
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
 
 app.use(cors({
   origin: FRONTEND_ORIGIN,
