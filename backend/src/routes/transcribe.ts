@@ -62,7 +62,7 @@ router.post(
       const transcription = await openai.audio.transcriptions.create({
         file: await OpenAI.toFile(file.buffer, file.originalname),
         model: 'gpt-4o-mini-transcribe',
-        response_format: 'verbose_json'
+        response_format: 'json'
       });
 
       const segments = (transcription.segments || []).map((seg: any) => ({
