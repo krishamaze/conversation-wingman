@@ -1,10 +1,21 @@
 import express, { Request, Response, NextFunction } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
 import supabase from '../config/supabase';
 
 const router = express.Router();
 
-interface AuthedRequest extends Request {
+interface AuthedRequest<
+  P = ParamsDictionary,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = ParsedQs
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
   userId?: string;
+  headers: Request['headers'];
+  query: ReqQuery;
+  params: P;
+  body: ReqBody;
 }
 
 const auth = async (req: AuthedRequest, res: Response, next: NextFunction) => {
@@ -23,8 +34,14 @@ const auth = async (req: AuthedRequest, res: Response, next: NextFunction) => {
 
 router.use(auth);
 
-router.get('/', async (req: AuthedRequest, res: Response) => {
-  const { page = '1', limit = '10', search = '' } = req.query as Record<string, string>;
+interface FavoritesQuery {
+  page?: string;
+  limit?: string;
+  search?: string;
+}
+
+router.get('/', async (req: AuthedRequest<ParamsDictionary, any, any, FavoritesQuery>, res: Response) => {
+  const { page = '1', limit = '10', search = '' } = req.query;
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
   const from = (pageNum - 1) * limitNum;
@@ -46,8 +63,12 @@ router.get('/', async (req: AuthedRequest, res: Response) => {
   res.json({ data, page: pageNum, limit: limitNum, total: count });
 });
 
-router.post('/', async (req: AuthedRequest, res: Response) => {
-  const { phrase } = req.body as { phrase?: string };
+interface FavoriteBody {
+  phrase: string;
+}
+
+router.post('/', async (req: AuthedRequest<ParamsDictionary, any, FavoriteBody>, res: Response) => {
+  const { phrase } = req.body;
   if (!phrase || typeof phrase !== 'string') {
     return res.status(400).json({ error: 'Phrase is required' });
   }
@@ -65,7 +86,11 @@ router.post('/', async (req: AuthedRequest, res: Response) => {
   res.status(201).json(data);
 });
 
-router.delete('/:id', async (req: AuthedRequest, res: Response) => {
+interface DeleteParams extends ParamsDictionary {
+  id: string;
+}
+
+router.delete('/:id', async (req: AuthedRequest<DeleteParams>, res: Response) => {
   const { id } = req.params;
   const { error } = await supabase
     .from('favorites')
