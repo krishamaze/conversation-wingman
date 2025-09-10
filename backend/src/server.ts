@@ -26,6 +26,14 @@ app.use(express.json());
 
 app.use(morgan('combined'));
 
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'conversation-wingman',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use('/api/transcribe', transcribeRouter);
 app.use('/api/suggest', suggestRouter);
 app.use('/api/favorites', favoritesRouter);
