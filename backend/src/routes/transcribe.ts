@@ -8,7 +8,7 @@ const router = express.Router();
 
 const ALLOWED_MIME_TYPES = [
   'audio/mpeg',
-  'audio/mp3', 
+  'audio/mp3',
   'audio/mp4',
   'audio/mpga',
   'audio/m4a',
@@ -59,11 +59,10 @@ router.post(
         size: file.size
       });
 
-      // ✅ FIXED: Use compatible response format
       const transcription = await openai.audio.transcriptions.create({
         file: await OpenAI.toFile(file.buffer, file.originalname),
         model: 'gpt-4o-mini-transcribe',
-        response_format: 'json' // ✅ Compatible format for newer models
+        response_format: 'json'
       });
 
       console.log('✅ Transcription successful:', {
@@ -71,22 +70,29 @@ router.post(
         modelUsed: 'gpt-4o-mini-transcribe'
       });
 
-      // ✅ FIXED: Simplified response structure for json format
-      res.json({ 
+      // Simplified response for json format (no segments available)
+      res.json({
         text: transcription.text,
-        confidence: null, // Not available with json format
-        segments: []      // Not available with newer models
+        confidence: null,
+        segments: []
       });
-
     } catch (error: any) {
       console.error('❌ Transcription failed:', {
         message: error.message,
         status: error.status,
         code: error.code
       });
-      
-      // Enhanced error responses
+
       if (error.status === 401) {
         return res.status(500).json({ error: 'Invalid OpenAI API key' });
       } else if (error.status === 429) {
-        return res.status(429).json({ error: 'OpenAI API rate limit exceeded'
+        return res.status(429).json({ error: 'OpenAI API rate limit exceeded' });
+      }
+
+      res.status(500).json({ error: 'Transcription failed' });
+    }
+  }
+);
+
+export default router;
+
