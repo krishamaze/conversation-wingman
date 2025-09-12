@@ -1,0 +1,1 @@
+"""Mastermind Django project initialization."""
